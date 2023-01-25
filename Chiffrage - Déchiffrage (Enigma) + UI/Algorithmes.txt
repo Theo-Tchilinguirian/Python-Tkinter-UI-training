@@ -1,0 +1,136 @@
+
+Algorithme _convertire_Decimal_Bin (entier_Dec : entier décimal)
+    %% Convertit un entier décimal en entier binaire
+
+    nb : entier
+    nb := entier_Dec
+
+    chaine_Bin : chaine de caractères
+
+    TantQue (nb >= 1)
+        chaine_Bin := str(nb % 2) + chaine_Bin
+        nb := nb//2
+    FinTantQue
+
+    Renvoyer (chaine_Bin)
+
+
+Algorithme _etape1_Convertire_Chaine_En_Bin (chaine : chaine de caractères)
+    %% Etape 1 : La chaine de caractères initiale est convertie en chaine binaire.
+
+    chaine_Bin := chaine de caractères
+
+    Pour char dans chaine
+        mot_Bin = str(Chiffrer_Dechiffrer._convertire_Decimal_Bin(ord(char)))  # La lettre est d'abord convertie en entier base 10 relatif à la table ASCII, puis en binaire.
+        TantQue (longueur mot_Bin < 8)
+            mot_Bin := '0' + mot_Bin
+        FinTantQue
+        chaine_Bin := chaine_Bin + mot_Bin
+    FinPour
+
+    Renvoyer (chaine_Bin)
+
+
+Algorithme _etape2_Diviser_En_Quartiles (chaine_Bin : chaine de cractères)
+    %% Etape 2 : Divise la chaine binaire en parties de 4 et renvoie une liste des parties
+
+    liste_Bin := liste
+
+    TantQue chaine_Bin n'est pas vide
+        chaine := chaine_Bin[0:4]
+        chaine_Bin := chaine_Bin[4:]
+        liste_Bin := liste_Bin + chaine
+    FinTantQue
+    Si liste_Bin n'est pas vide
+        TantQue (longueur liste_Bin[-1] < 4)
+            liste_Bin[-1] := '0' + liste_Bin[-1]
+        FinTantQue
+    FinSi
+
+    Renvoyer (liste_Bin)
+
+
+Algorithme _etape3_Ajouter_01_10 (liste_Bin : liste)
+    %% Etape 3 : Ajoute '01' et '10' au début et à la fin de chaque élément de liste_Bin.
+
+    Pour i allant de 0 à (longueur liste_Bin)
+        liste_Bin[i] := '01' + liste_Bin[i] + '10'
+    FinPour
+
+    Renvoyer (liste_Bin)
+
+
+Algorithme _etape4_Inverser_Quartiles (liste_Bin : liste)
+    %% Etape 4 : On inverse les quatre premiers bits de chaque octet avec les quatre derniers.
+
+    Pour i allant de 0 à (longueur liste_Bin)
+        Q1 := liste_Bin[i][:4]
+        Q2 := liste_Bin[i][4:]
+        liste_Bin[i] := Q2 + Q1
+    FinPour
+
+    Renvoyer (liste_Bin)
+
+
+Algorithme _etape5_chiffrer_Bin_ASCII (liste_Bin : liste)
+    %% Etape 5 : Traduit chaque octet de liste_Bin en caractère chiffré selon la table ASCII, puis le concatène à une chaine de caractères.
+
+    chaine_Chiffree := chaine de caractères
+
+    Pour i allant de 0 à (longueur liste_Bin)
+        liste_Bin[i] := chr(int(liste_Bin[i], base 2))
+        chaine_Chiffree := chaine_Chiffree + liste_Bin[i]
+    FinPour
+
+    Renvoyer (chaine_Chiffree)
+
+
+Algorithme _REVERSE_etape5_dechiffrer_ASCII_Bin (chaine_Chiffree : chaine de caractères)
+    %% Etape 1 du déchiffrage : Ajoute chaque caractère de chaine_Chiffree à liste_Bin et le traduit en octet binaire.
+
+    liste_Bin : liste
+    liste_Bin := chaine_Chiffree
+
+    Pour char allant de 0 à (longueur liste_Bin)
+        liste_Bin[char] := _convertire_Decimal_Bin(ord(liste_Bin[char]))
+    FinPour
+    Pour i allant de 0 à (longueur liste_Bin)
+        TantQue (longueur liste_Bin[i]) < 8
+            liste_Bin[i] := '0' + liste_Bin[i]
+        FinTantQue
+    FinPour
+
+    Renvoyer (liste_Bin)
+
+
+Algorithme _REVERSE_etape3_Enlever_01_10 (liste_Bin : liste)
+    %% Etape 3 du déchiffrage : Enlève les deux premiers '01' et derniers '10' de chaque élément de liste_Bin.
+
+    Pour i allant de 0 à (longueur liste_Bin)
+        liste_Bin[i] := liste_Bin[i][2:-2]
+    FinPour
+
+    Renvoyer (liste_Bin)
+
+
+Algorithme _REVERSE_etape2_Rejoindre_Les_Quartiles (liste_Bin : liste)
+    %% Etape 4 du déchiffrement : Rejoint les élément de liste_Bin et renvoie la liste de chaines de caractères.
+
+    Pour i allant de 0 à (longueur liste_Bin / 2)
+        liste_Bin[i] := liste_Bin[i] + liste_Bin[i + 1]
+        Supprimer liste_Bin[i + 1]
+       FinPour
+
+    Renvoyer (liste_Bin)
+
+
+Algorithme _REVERSE_etape1_Convertire_Bin_En_Chaine (liste_Bin : liste)
+    %% Etape 5 du déchiffrement : Convertit la liste de chaines de caractères en chaine de caractères, caractère par caractère.
+
+    chaine_Dechiffree : chaine de caractères
+
+    Pour elt dans liste_Bin
+        chaine_Dechiffree := chaine_Dechiffree + chr(int(elt, 2))
+    FinPour
+
+    Renvoyer (chaine_Dechiffree)
